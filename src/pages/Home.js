@@ -12,6 +12,7 @@ function App() {
   const [modalUpdate, setModalUpdate] = useState(false);
   const [updateItem, setUpdateItem] = useState("");
   const [loader, setLoader] = useState(false);
+  const [token, setToken] = useState("");
   const [error, setError] = useState({
     error: false,
     message: "",
@@ -20,8 +21,10 @@ function App() {
   useEffect(() => {
     if (!auth) {
       const token = localStorage.getItem("token");
+
       if (token) {
         setAuth(true);
+        setToken(token);
       } else {
         setList([]);
       }
@@ -38,11 +41,16 @@ function App() {
   const fetchData = async () => {
     setLoader(true);
     console.log("fetching...");
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    };
     const res = await API.get(`mangas`, {
       headers: headers,
     });
     setLoader(false);
     setList(res.data.data);
+    console.log("done fetching...");
   };
 
   const deleteData = async (id) => {
