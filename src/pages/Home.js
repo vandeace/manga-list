@@ -36,6 +36,7 @@ function App() {
       fetchData();
       setChange(!change);
     }
+    // eslint-disable-next-line
   }, [change, auth, details]);
 
   const fetchData = async () => {
