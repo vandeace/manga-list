@@ -11,6 +11,7 @@ function App() {
   const [details, setDetails] = useState("");
   const [modalUpdate, setModalUpdate] = useState(false);
   const [updateItem, setUpdateItem] = useState("");
+
   const [loader, setLoader] = useState(false);
   const [token, setToken] = useState("");
   const [error, setError] = useState({
@@ -120,6 +121,7 @@ function App() {
         fetchData={fetchData}
         getDetails={getDetails}
       />
+
       {loader && <Loader />}
       <div className="bg-janda pt-5" style={{ height: "90vh" }}>
         <div className="container mx-auto ">
