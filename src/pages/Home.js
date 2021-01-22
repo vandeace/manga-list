@@ -64,9 +64,11 @@ function App() {
     const res = await API.delete(`mangas/${id}`, {
       headers: headers,
     });
+    if (res) {
+      setDetails("");
+      setChange(true);
+    }
     setLoader(false);
-    setChange(true);
-    setDetails("");
   };
 
   const getDetails = async (id) => {
