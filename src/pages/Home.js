@@ -2,6 +2,7 @@ import NavBar from "components/Navbar";
 import { useEffect, useState } from "react";
 import { API, headers } from "config/api";
 import UpdateModal from "components/Modals/Update";
+import Loader from "components/Loader/Loader";
 
 function App() {
   const [list, setList] = useState([]);
@@ -10,6 +11,7 @@ function App() {
   const [details, setDetails] = useState("");
   const [modalUpdate, setModalUpdate] = useState(false);
   const [updateItem, setUpdateItem] = useState("");
+  const [loader, setLoader] = useState(false);
   const [error, setError] = useState({
     error: false,
     message: "",
@@ -34,30 +36,35 @@ function App() {
   }, [change, auth, details]);
 
   const fetchData = async () => {
+    setLoader(true);
+    console.log("fetching...");
     const res = await API.get(`mangas`, {
       headers: headers,
     });
-
+    setLoader(false);
     setList(res.data.data);
   };
 
   const deleteData = async (id) => {
+    setLoader(true);
     // eslint-disable-next-line
     const res = await API.delete(`mangas/${id}`, {
       headers: headers,
     });
-
+    setLoader(false);
     setChange(true);
     setDetails("");
   };
 
   const getDetails = async (id) => {
-    console.log(id, "id");
+    setLoader(true);
+    console.log("getDetails....");
     const res = await API.get(`/mangas/${id}`, {
       headers: headers,
     }).catch(function (error) {
       if (error.response) {
         const errorMessage = error?.response?.data?.message;
+        setLoader(false);
         setError({
           error: true,
           message: errorMessage,
@@ -65,6 +72,7 @@ function App() {
       }
     });
     if (res?.status === 200) {
+      setLoader(false);
       setDetails(res.data.data);
     }
   };
@@ -82,6 +90,7 @@ function App() {
         setChange={setChange}
         auth={auth}
         setAuth={setAuth}
+        fetchData={fetchData}
       />
       <UpdateModal
         setAuth={setAuth}
@@ -93,6 +102,7 @@ function App() {
         fetchData={fetchData}
         getDetails={getDetails}
       />
+      {loader && <Loader />}
       <div className="bg-janda pt-5" style={{ height: "90vh" }}>
         <div className="container mx-auto ">
           <div className="grid xl:grid-cols-2 grid-cols-1 gap-4">

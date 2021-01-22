@@ -14,9 +14,13 @@ const Navbar = (props) => {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      props.setAuth(true);
+    if (!props.auth) {
+      const token = localStorage.getItem("token");
+      if (token) {
+        props.setAuth(true);
+      } else {
+        props.setAuth(false);
+      }
     }
     // eslint-disable-next-line
   }, [props.auth]);

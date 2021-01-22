@@ -4,6 +4,7 @@ import Modal from "react-modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { API } from "config/api";
+import Loader from "components/Loader/Loader";
 
 const customStyles = {
   content: {
@@ -24,6 +25,7 @@ const SearchManga = (props) => {
   const [results, setResults] = useState([]);
   const [notFound, setNotFound] = useState(false);
   const [keyword, setKeyword] = useState("");
+  const [loader, setLoader] = useState(false);
 
   const searchCharacters = async (keyword) => {
     setNotFound(false);
@@ -43,6 +45,7 @@ const SearchManga = (props) => {
   };
 
   const addData = async (item) => {
+    setLoader(true);
     const payload = {
       idKitsu: item.id,
       title: item.title,
@@ -59,7 +62,8 @@ const SearchManga = (props) => {
 
     const res = await API.post(`/mangas`, payload, { headers: headers });
     if (res) {
-      props.setChange(!props.change);
+      props.setChange(true);
+      setLoader(false);
     }
   };
 
@@ -76,6 +80,7 @@ const SearchManga = (props) => {
         contentLabel="Modal Add"
         ariaHideApp={false}
       >
+        {loader && <Loader />}
         <div className="" style={{ minWidth: 400, width: 600 }}>
           <div className="block">
             <FontAwesomeIcon

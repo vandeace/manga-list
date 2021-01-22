@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { API } from "config/api";
+import Loader from "components/Loader/Loader";
 
 const customStyles = {
   content: {
@@ -15,11 +16,12 @@ const customStyles = {
     transform: "translate(-50%, -50%)",
   },
   overlay: {
-    background: "rgba(0, 0, 0, 0.3)",
+    background: "rgba(0, 0, 0, 0.1)",
   },
 };
 
 const Login = (props) => {
+  const [loader, setLoader] = useState(false);
   const [error, setError] = useState({
     error: false,
     message: "",
@@ -28,6 +30,7 @@ const Login = (props) => {
 
   //handle submit login
   const onSubmit = async (data) => {
+    setLoader(true);
     const payload = {
       email: data.email,
       password: data.password,
@@ -39,6 +42,7 @@ const Login = (props) => {
           error: true,
           message: errorMessage,
         });
+        setLoader(false);
       }
     });
     if (res?.status === 200) {
@@ -46,6 +50,7 @@ const Login = (props) => {
       console.log(res.data.data.token, "token");
       localStorage.setItem("token", res.data.data.token);
       props.setAuth(props.auth);
+      setLoader(false);
       toggle();
     }
   };
@@ -69,6 +74,7 @@ const Login = (props) => {
         contentLabel="Modal Login"
         ariaHideApp={false}
       >
+        {loader && <Loader />}
         <div className="" style={{ minWidth: 400 }}>
           <div className="block">
             <FontAwesomeIcon
