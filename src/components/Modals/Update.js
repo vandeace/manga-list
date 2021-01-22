@@ -3,7 +3,8 @@ import Modal from "react-modal";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { API, headers } from "config/api";
+import { API } from "config/api";
+import Loader from "components/Loader/Loader";
 
 const customStyles = {
   content: {
@@ -21,22 +22,30 @@ const customStyles = {
 
 const Update = (props) => {
   const { register, handleSubmit } = useForm();
+  const [loader, setLoader] = useState(false);
   const [error, setError] = useState({
     error: false,
     message: "",
   });
   const onSubmit = async (data) => {
+    setLoader(true);
     const payload = {
       title: data.title,
       canonicalTitle: data.canonicalTitle,
       averageRating: data.averageRating,
       synopsis: data.synopsis,
     };
+    const token = localStorage.getItem("token");
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    };
     const res = await API.patch(`/mangas/${props.item.id}`, payload, {
       headers: headers,
     }).catch(function (error) {
       if (error.response) {
         const errorMessage = error?.response?.data?.message;
+        setLoader(false);
         setError({
           error: true,
           message: errorMessage,
@@ -45,6 +54,7 @@ const Update = (props) => {
     });
     if (res?.status === 200) {
       console.log(res.data.data.id, "id");
+      setLoader(false);
       //   props.setChange(props.change);
       props.fetchData();
       props.getDetails(res.data.data.id);
@@ -80,6 +90,7 @@ const Update = (props) => {
         contentLabel="Example Modal"
         ariaHideApp={false}
       >
+        {loader && <Loader />}
         <div className="px-5" style={{ minWidth: 400 }}>
           <div className="block">
             <FontAwesomeIcon

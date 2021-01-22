@@ -1,6 +1,6 @@
 import NavBar from "components/Navbar";
 import { useEffect, useState } from "react";
-import { API, headers } from "config/api";
+import { API } from "config/api";
 import UpdateModal from "components/Modals/Update";
 import Loader from "components/Loader/Loader";
 
@@ -57,6 +57,10 @@ function App() {
   const deleteData = async (id) => {
     setLoader(true);
     // eslint-disable-next-line
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    };
     const res = await API.delete(`mangas/${id}`, {
       headers: headers,
     });
@@ -67,6 +71,10 @@ function App() {
 
   const getDetails = async (id) => {
     console.log("getDetails....");
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    };
     const res = await API.get(`/mangas/${id}`, {
       headers: headers,
     }).catch(function (error) {
