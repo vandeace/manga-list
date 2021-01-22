@@ -66,7 +66,6 @@ function App() {
   };
 
   const getDetails = async (id) => {
-    setLoader(true);
     console.log("getDetails....");
     const res = await API.get(`/mangas/${id}`, {
       headers: headers,
@@ -81,7 +80,6 @@ function App() {
       }
     });
     if (res?.status === 200) {
-      setLoader(false);
       setDetails(res.data.data);
     }
   };
