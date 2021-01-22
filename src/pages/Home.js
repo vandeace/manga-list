@@ -27,6 +27,7 @@ function App() {
         setToken(token);
       } else {
         setList([]);
+        setDetails("");
       }
     } else {
       fetchData();
