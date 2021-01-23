@@ -1,6 +1,5 @@
 import NavBar from "components/Navbar";
-import { useEffect, useState } from "react";
-import { API } from "config/api";
+import { useEffect } from "react";
 
 import { useStore } from "components/api";
 import MangaList from "components/MangaList";
