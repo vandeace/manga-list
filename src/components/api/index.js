@@ -49,9 +49,10 @@ export const useStore = create((set) => ({
     }
     set({ details: await res.data.data });
   },
+  loadingUpdate: false,
   updateDataSuccess: false,
   updateData: async (id, payload) => {
-    set({ loading: true, updateDataSuccess: false });
+    set({ loadingUpdate: true, updateDataSuccess: false });
     const headers = {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
@@ -61,7 +62,7 @@ export const useStore = create((set) => ({
       headers: headers,
     });
     if (res.data) {
-      set({ loading: false, updateDataSuccess: true });
+      set({ loadingUpdate: false, updateDataSuccess: true });
     }
     set({ details: await res.data.data });
   },
