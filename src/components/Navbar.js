@@ -29,22 +29,9 @@ const Navbar = (props) => {
 
   return (
     <div style={{ borderBottom: "2px solid #E5E5E5" }}>
-      <Login
-        setAuth={props.setAuth}
-        modal={modalLogin}
-        setModal={setModalLogin}
-      />
-      <Register
-        setAuth={props.setAuth}
-        modal={modalRegister}
-        setModal={setModalRegister}
-      />
-      <Search
-        modal={modalAdd}
-        setModal={setModalAdd}
-        change={props.change}
-        setChange={props.setChange}
-      />
+      <Login modal={modalLogin} setModal={setModalLogin} />
+      <Register modal={modalRegister} setModal={setModalRegister} />
+      <Search modal={modalAdd} setModal={setModalAdd} />
       <AnswerModal modal={modalAnswer} setModal={setModalAnswer} />
       <nav
         className="h-16 flex justify-between items-center bg-white text-blue-primary relative shadow-sm font-mono container mx-auto 2xl:p-2 px-4"

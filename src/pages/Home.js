@@ -1,8 +1,10 @@
 import NavBar from "components/Navbar";
-import { useEffect, useState } from "react";
-import { API } from "config/api";
+import { useCallback, useEffect, useState } from "react";
+import { API, getAuth } from "config/api";
 import UpdateModal from "components/Modals/Update";
 import Loader from "components/Loader/Loader";
+import { useDispatch, useSelector } from "react-redux";
+import { getCollection } from "components/_redux/actions/collection";
 
 function App() {
   const [list, setList] = useState([]);
@@ -11,39 +13,29 @@ function App() {
   const [details, setDetails] = useState("");
   const [modalUpdate, setModalUpdate] = useState(false);
   const [updateItem, setUpdateItem] = useState("");
-
+  const dispatch = useDispatch();
   const [loader, setLoader] = useState(false);
-  const [token, setToken] = useState("");
   const [error, setError] = useState({
     error: false,
     message: "",
   });
 
-  useEffect(() => {
-    if (!auth) {
-      const token = localStorage.getItem("token");
+  //redux
+  const data = useSelector((state) => state.collection.data);
+  const loading = useSelector((state) => state.collection.loading);
+  const isAuth = useSelector((state) => state.user.isAuth);
+  const token = useSelector((state) => state.user.data?.data?.token);
+  console.log(token, "token");
+  console.log(isAuth, "isAuth");
+  console.log(auth, "auth");
+  ///
 
-      if (token) {
-        setAuth(true);
-        setToken(token);
-      } else {
-        setList([]);
-        setDetails("");
-      }
-    } else {
-      fetchData();
-    }
+  // const initFetch = useCallback(() => {
+  //   console.log("running");
+  //   dispatch(getCollection(token));
+  // }, [dispatch]);
 
-    if (change) {
-      fetchData();
-      setChange(!change);
-    }
-    // eslint-disable-next-line
-  }, [change, auth, details]);
-
-  const fetchData = async () => {
-    setLoader(true);
-    console.log("fetching...");
+  const fetchingData = async () => {
     const headers = {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
@@ -51,49 +43,95 @@ function App() {
     const res = await API.get(`mangas`, {
       headers: headers,
     });
-    setLoader(false);
-    setList(res.data.data);
-    console.log("done fetching...");
+    console.log(res, "res");
   };
 
-  const deleteData = async (id) => {
-    setLoader(true);
-    // eslint-disable-next-line
-    const headers = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    };
-    const res = await API.delete(`mangas/${id}`, {
-      headers: headers,
-    });
-    if (res) {
-      setDetails("");
-      setChange(true);
+  console.log(data, "data");
+
+  useEffect(() => {
+    if (token) {
+      localStorage.setItem("token", token);
+      // initFetch();
+      fetchingData();
     }
-    setLoader(false);
+    if (isAuth) {
+      setAuth(true);
+    }
+    if (auth) {
+      dispatch(getCollection(token));
+    }
+    // if (!auth) {
+    //   const token = localStorage.getItem("token");
+    //   if (token) {
+    //     setAuth(true);
+    //     initFetch();
+    //   } else {
+    //     setList([]);
+    //     setDetails("");
+    //   }
+    // } else {
+    //   fetchData();
+    // }
+    // if (change) {
+    //   fetchData();
+    //   setChange(!change);
+    // }
+    // eslint-disable-next-line
+  }, [isAuth]);
+  console.log(isAuth, "isAuth");
+  // const fetchData = async () => {
+  //   setLoader(true);
+  //   console.log("fetching...");
+  //   const headers = {
+  //     "Content-Type": "application/json",
+  //     Authorization: `Bearer ${token}`,
+  //   };
+  //   const res = await API.get(`/mangas`, {
+  //     headers: headers,
+  //   });
+  //   setLoader(false);
+  //   setList(res.data.data);
+  //   console.log("done fetching...");
+  // };
+
+  const deleteData = async (id) => {
+    // setLoader(true);
+    // // eslint-disable-next-line
+    // const headers = {
+    //   "Content-Type": "application/json",
+    //   Authorization: `Bearer ${token}`,
+    // };
+    // const res = await API.delete(`/mangas/${id}`, {
+    //   headers: headers,
+    // });
+    // if (res) {
+    //   setDetails("");
+    //   setChange(true);
+    // }
+    // setLoader(false);
   };
 
   const getDetails = async (id) => {
-    console.log("getDetails....");
-    const headers = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    };
-    const res = await API.get(`/mangas/${id}`, {
-      headers: headers,
-    }).catch(function (error) {
-      if (error.response) {
-        const errorMessage = error?.response?.data?.message;
-        setLoader(false);
-        setError({
-          error: true,
-          message: errorMessage,
-        });
-      }
-    });
-    if (res?.status === 200) {
-      setDetails(res.data.data);
-    }
+    // console.log("getDetails....");
+    // const headers = {
+    //   "Content-Type": "application/json",
+    //   Authorization: `Bearer ${token}`,
+    // };
+    // const res = await API.get(`/mangas/${id}`, {
+    //   headers: headers,
+    // }).catch(function (error) {
+    //   if (error.response) {
+    //     const errorMessage = error?.response?.data?.message;
+    //     setLoader(false);
+    //     setError({
+    //       error: true,
+    //       message: errorMessage,
+    //     });
+    //   }
+    // });
+    // if (res?.status === 200) {
+    //   setDetails(res.data.data);
+    // }
   };
 
   const updateData = (item) => {
@@ -109,7 +147,6 @@ function App() {
         setChange={setChange}
         auth={auth}
         setAuth={setAuth}
-        fetchData={fetchData}
       />
       <UpdateModal
         setAuth={setAuth}
@@ -118,7 +155,6 @@ function App() {
         setModal={setModalUpdate}
         item={updateItem}
         change={change}
-        fetchData={fetchData}
         getDetails={getDetails}
       />
 
@@ -138,6 +174,7 @@ function App() {
                   className="pb-5 relative"
                   style={{ height: 570, overflowY: "auto" }}
                 >
+                  {loading && <h1 className="">Fetching List....</h1>}
                   {!auth && (
                     <h1 className="text-center w-full">
                       Login or Register to add your favorite manga to the list

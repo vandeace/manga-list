@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Home from "pages/Home";
-
 // const getKeyWord = async () => {
 //   const word = "cat and dog eat";
 //   const wordLength = word.split(" ").length;

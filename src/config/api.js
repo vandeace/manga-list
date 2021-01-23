@@ -12,3 +12,16 @@ export const headers = {
   "Content-Type": "application/json",
   Authorization: `Bearer ${token}`,
 };
+
+export const setAuthToken = (token) => {
+  API.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+};
+
+export const getAuth = () => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    return true;
+  } else {
+    return false;
+  }
+};

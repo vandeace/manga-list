@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { API } from "config/api";
 import Loader from "components/Loader/Loader";
+import { Login } from "components/_redux/actions/auth";
+import { getCollection } from "components/_redux/actions/collection";
+import { useDispatch, useSelector } from "react-redux";
 
 const customStyles = {
   content: {
@@ -20,40 +23,36 @@ const customStyles = {
   },
 };
 
-const Login = (props) => {
-  const [loader, setLoader] = useState(false);
+const LoginModal = (props) => {
+  const dispatch = useDispatch();
   const [error, setError] = useState({
     error: false,
     message: "",
   });
   const { register, handleSubmit } = useForm();
 
+  //redux
+  const isAuth = useSelector((state) => state.user.isAuth);
+  const loading = useSelector((state) => state.user.loading);
+  // const error = useSelector((state) => state.collection.error);
+
+  ///
+
   //handle submit login
   const onSubmit = async (data) => {
-    setLoader(true);
     const payload = {
       email: data.email,
       password: data.password,
     };
-    const res = await API.post("/login", payload).catch(function (error) {
-      if (error.response) {
-        const errorMessage = error?.response?.data?.message;
-        setError({
-          error: true,
-          message: errorMessage,
-        });
-        setLoader(false);
-      }
-    });
-    if (res?.status === 200) {
-      console.log(res, "res");
-      console.log(res.data.data.token, "token");
-      localStorage.setItem("token", res.data.data.token);
-      props.setAuth(props.auth);
-      setLoader(false);
+    dispatch(Login(payload));
+  };
+
+  useEffect(() => {
+    if (isAuth) {
       toggle();
     }
-  };
+    // eslint-disable-next-line
+  }, [isAuth]);
 
   const toggle = () => {
     props.setModal(!props.setModal);
@@ -74,7 +73,7 @@ const Login = (props) => {
         contentLabel="Modal Login"
         ariaHideApp={false}
       >
-        {loader && <Loader />}
+        {loading && <Loader />}
         <div className="" style={{ minWidth: 400 }}>
           <div className="block">
             <FontAwesomeIcon
@@ -120,4 +119,4 @@ const Login = (props) => {
   );
 };
 
-export default Login;
+export default LoginModal;
