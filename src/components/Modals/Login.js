@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { API } from "config/api";
 import Loader from "components/Loader/Loader";
+import { useStore } from "components/api";
 
 const customStyles = {
   content: {
@@ -21,6 +22,8 @@ const customStyles = {
 };
 
 const Login = (props) => {
+  const fetchCollection = useStore((state) => state.fetchCollection);
+  const setAuthTrue = useStore((state) => state.setAuthTrue);
   const [loader, setLoader] = useState(false);
   const [error, setError] = useState({
     error: false,
@@ -48,8 +51,9 @@ const Login = (props) => {
     if (res?.status === 200) {
       console.log(res, "res");
       console.log(res.data.data.token, "token");
+      setAuthTrue();
       localStorage.setItem("token", res.data.data.token);
-      props.setAuth(props.auth);
+      fetchCollection(res.data.data.token);
       setLoader(false);
       toggle();
     }

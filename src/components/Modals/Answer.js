@@ -76,7 +76,7 @@ const Answer = (props) => {
     props.setModal(!props.setModal);
     setResult([]);
   };
-  console.log(result, "result");
+
   return (
     <div>
       <Modal
