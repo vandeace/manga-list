@@ -7,7 +7,8 @@ export const useStore = create((set) => ({
   fetchError: false,
   fetchErrorMessage: "",
   fetchCollection: async (firstToken) => {
-    if (token || firstToken) {
+    if (firstToken) {
+      const token = localStorage.getItem("token");
       set({ loadingCollection: true, fetchError: false });
 
       const headers = {
@@ -37,6 +38,7 @@ export const useStore = create((set) => ({
   fetchingSuccess: false,
   fetchDetails: async (id) => {
     set({ loading: true });
+    const token = localStorage.getItem("token");
     const headers = {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
@@ -52,6 +54,7 @@ export const useStore = create((set) => ({
   loadingUpdate: false,
   updateDataSuccess: false,
   updateData: async (id, payload) => {
+    const token = localStorage.getItem("token");
     set({ loadingUpdate: true, updateDataSuccess: false });
     const headers = {
       "Content-Type": "application/json",
@@ -69,6 +72,7 @@ export const useStore = create((set) => ({
   deleteDataSuccess: false,
   deleteData: async (id) => {
     set({ loading: true, deleteDataSuccess: false });
+    const token = localStorage.getItem("token");
     const headers = {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
@@ -84,6 +88,7 @@ export const useStore = create((set) => ({
   addMangaLoading: false,
   addManga: async (payload) => {
     set({ addMangaLoading: true, addMangaSuccess: false });
+    const token = localStorage.getItem("token");
     const headers = {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
@@ -101,7 +106,6 @@ export const useStore = create((set) => ({
   removeError: () => set({ loginError: false }),
   Login: async (payload) => {
     set({ loginLoading: true });
-
     const res = await API.post("/login", payload).catch(function (error) {
       if (error.response) {
         const errorMessage = error?.response?.data?.message;
