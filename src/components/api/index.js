@@ -1,5 +1,5 @@
 import create from "zustand";
-import { API, token } from "config/api";
+import { API } from "config/api";
 
 export const useStore = create((set) => ({
   collection: [],
