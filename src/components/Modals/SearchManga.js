@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Search from "components/Search";
 import Modal from "react-modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { API } from "config/api";
 import Loader from "components/Loader/Loader";
+import { useStore } from "components/api";
 
 const customStyles = {
   content: {
@@ -26,11 +27,15 @@ const SearchManga = (props) => {
   const [notFound, setNotFound] = useState(false);
   const [keyword, setKeyword] = useState("");
   const [loader, setLoader] = useState(false);
+  const addMangaSuccess = useStore((state) => state.addMangaSuccess);
+  const addMangaLoading = useStore((state) => state.addMangaLoading);
+  const addManga = useStore((state) => state.addManga);
+  const fetchCollection = useStore((state) => state.fetchCollection);
 
   const searchCharacters = async (keyword) => {
     setNotFound(false);
     const res = await API.get(`/manga?search=${keyword}`);
-
+    
     setIsSearching(false);
     // Set results state
     if (res.data.length !== 0) {
@@ -45,7 +50,6 @@ const SearchManga = (props) => {
   };
 
   const addData = async (item) => {
-    setLoader(true);
     const payload = {
       idKitsu: item.id,
       title: item.title,
@@ -53,24 +57,20 @@ const SearchManga = (props) => {
       averageRating: item.averageRating,
       synopsis: item.synopsis,
     };
-    const token = localStorage.getItem("token");
-
-    const headers = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    };
-
-    const res = await API.post(`/mangas`, payload, { headers: headers });
-    if (res) {
-      props.setChange(true);
-      setLoader(false);
-    }
+    addManga(payload);
   };
 
   const clearData = () => {
     setResults([]);
     setKeyword("");
   };
+
+  useEffect(() => {
+    if (addMangaSuccess) {
+      fetchCollection();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addMangaSuccess]);
 
   return (
     <div>
@@ -80,7 +80,7 @@ const SearchManga = (props) => {
         contentLabel="Modal Add"
         ariaHideApp={false}
       >
-        {loader && <Loader />}
+        {addMangaLoading && <Loader />}
         <div className="" style={{ minWidth: 400, width: 600 }}>
           <div className="block">
             <FontAwesomeIcon
