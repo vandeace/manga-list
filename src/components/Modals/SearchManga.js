@@ -26,7 +26,6 @@ const SearchManga = (props) => {
   const [results, setResults] = useState([]);
   const [notFound, setNotFound] = useState(false);
   const [keyword, setKeyword] = useState("");
-  const [loader, setLoader] = useState(false);
   const addMangaSuccess = useStore((state) => state.addMangaSuccess);
   const addMangaLoading = useStore((state) => state.addMangaLoading);
   const addManga = useStore((state) => state.addManga);
@@ -35,7 +34,7 @@ const SearchManga = (props) => {
   const searchCharacters = async (keyword) => {
     setNotFound(false);
     const res = await API.get(`/manga?search=${keyword}`);
-    
+
     setIsSearching(false);
     // Set results state
     if (res.data.length !== 0) {
