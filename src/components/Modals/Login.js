@@ -53,7 +53,7 @@ const Login = (props) => {
       console.log(res.data.data.token, "token");
       setAuthTrue();
       localStorage.setItem("token", res.data.data.token);
-      fetchCollection(res.data.data.token);
+      fetchCollection();
       setLoader(false);
       toggle();
     }
