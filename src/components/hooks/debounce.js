@@ -30,6 +30,6 @@ export default function useDebounce(value, delay) {
     // eslint-disable-next-line
     [value]
   );
-  console.log(debouncedValue, "debouncedValue");
+
   return debouncedValue;
 }

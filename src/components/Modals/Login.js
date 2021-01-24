@@ -49,8 +49,6 @@ const Login = (props) => {
       }
     });
     if (res?.status === 200) {
-      console.log(res, "res");
-      console.log(res.data.data.token, "token");
       setAuthTrue();
       localStorage.setItem("token", res.data.data.token);
       fetchCollection();

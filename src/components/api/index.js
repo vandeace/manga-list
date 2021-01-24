@@ -15,7 +15,6 @@ export const useStore = create((set) => ({
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     };
-    console.log(headers, "headers");
 
     const res = await API.get(`mangas`, {
       headers: headers,
@@ -99,5 +98,4 @@ export const useStore = create((set) => ({
       set({ addMangaLoading: false, addMangaSuccess: true });
     }
   },
-  
 }));
