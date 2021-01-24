@@ -52,7 +52,7 @@ const Login = (props) => {
       localStorage.removeItem("token");
       localStorage.setItem("token", res.data.token);
       console.log(res.data.token, "token");
-      fetchCollection(res.data.token);
+      fetchCollection();
       setAuthTrue();
       setLoader(false);
       toggle();
