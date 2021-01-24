@@ -30,10 +30,24 @@ const SearchManga = (props) => {
   const addMangaLoading = useStore((state) => state.addMangaLoading);
   const addManga = useStore((state) => state.addManga);
   const fetchCollection = useStore((state) => state.fetchCollection);
-
+  const [error, setError] = useState({
+    error: false,
+    message: "",
+  });
   const searchCharacters = async (keyword) => {
     setNotFound(false);
-    const res = await API.get(`/manga?search=${keyword}`);
+    const res = await API.get(`/manga?search=${keyword}`).catch(function (
+      error
+    ) {
+      if (error.response) {
+        const errorMessage = error?.response?.data?.message;
+        setError({
+          error: true,
+          message: errorMessage,
+        });
+        setIsSearching(false);
+      }
+    });
 
     setIsSearching(false);
     // Set results state
@@ -101,6 +115,9 @@ const SearchManga = (props) => {
             setKeyword={setKeyword}
             setNotFound={setNotFound}
           />
+          {error.error && (
+            <p className="text-red text-center">{error.message}</p>
+          )}
           {results.length !== 0 && (
             <div className="py-3">
               <button

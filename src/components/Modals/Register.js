@@ -51,7 +51,7 @@ const Login = (props) => {
     if (res?.status === 200) {
       localStorage.removeItem("token");
       localStorage.setItem("token", res.data.token);
-      console.log(res.data.token, "token");
+
       fetchCollection();
       setAuthTrue();
       setLoader(false);
