@@ -39,7 +39,8 @@ const SearchManga = (props) => {
     const res = await API.get(`/manga?search=${keyword}`).catch(function (
       error
     ) {
-      if (error.response) {
+      if (error) {
+        console.log(error, "object");
         setError({
           error: true,
           message: "error search data please try again",
@@ -50,7 +51,7 @@ const SearchManga = (props) => {
 
     setIsSearching(false);
     // Set results state
-    if (res.data.length !== 0) {
+    if (res?.data?.length !== 0) {
       setResults(res.data);
     } else {
       setNotFound(true);
