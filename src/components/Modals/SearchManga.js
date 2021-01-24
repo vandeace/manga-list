@@ -40,10 +40,9 @@ const SearchManga = (props) => {
       error
     ) {
       if (error.response) {
-        const errorMessage = error?.response?.data?.message;
         setError({
           error: true,
-          message: errorMessage,
+          message: "error search data please try again",
         });
         setIsSearching(false);
       }
